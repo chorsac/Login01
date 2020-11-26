@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="https://download1323.mediafire.com/i8m8pb5oueig/yckoz8ci3j942gc/Styles.css">
+
+<link rel="stylesheet" href="/style.css">
+    <title>Sign in landing page</title> 
+
+<script type="text/javascript">
+		function validar()
+		{
+			var usuario = document.getElementById("username").value;
+			var Contraseña = document.getElementById("password").value;	
+
+			if(usuario == "123" && Contraseña == "123")
+			{
+                         alert("Usuario y Contraseña validos"); 
+                         location.href="www.google.com";
+                                 
+			}
+			else
+			{
+				alert("Verifique sus credenciales");
+			}
+		}
+	</script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="title">Sign in with</div>
+        <div class="social-login">
+            <button>
+                <i class="fab fa-facebook-f"></i>
+                facebook
+            </button>
+            <button>
+                <i class="fab fa-twitter"></i>
+                twitter
+            </button>
+        </div>
+        <p class="or"> <span></span> Or <span></span> </p>
+            <div class="form-control">
+                <label for="username">Username</label>
+                <input type="text" id="username"
+                placeholder="Username">
+            </div>
+            <div class="form-control">
+                <label for="password">Password</label>
+                <input type="password" id="password"
+                placeholder="Password">
+            </div>
+            <button class="button button2" onclick="validar()" value="verificar">Sign in</button>       
+        <p class="additional-act">Don't have an account? <span> Register</span></p>
+    </div>
+   
+</body>
+</html>
