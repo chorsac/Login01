@@ -694,3 +694,207 @@ var pJS = function(tag_id, params){
   
     };
 
+pJS.fn.interact.attractParticles  = function(p1, p2){
+  
+      /* condensed particles */
+      var dx = p1.x - p2.x,
+          dy = p1.y - p2.y,
+          dist = Math.sqrt(dx*dx + dy*dy);
+  
+      if(dist <= pJS.particles.line_linked.distance){
+  
+        var ax = dx/(pJS.particles.move.attract.rotateX*1000),
+            ay = dy/(pJS.particles.move.attract.rotateY*1000);
+  
+        p1.vx -= ax;
+        p1.vy -= ay;
+  
+        p2.vx += ax;
+        p2.vy += ay;
+  
+      }
+      
+  
+    }
+  
+  
+    pJS.fn.interact.bounceParticles = function(p1, p2){
+  
+      var dx = p1.x - p2.x,
+          dy = p1.y - p2.y,
+          dist = Math.sqrt(dx*dx + dy*dy),
+          dist_p = p1.radius+p2.radius;
+  
+      if(dist <= dist_p){
+        p1.vx = -p1.vx;
+        p1.vy = -p1.vy;
+  
+        p2.vx = -p2.vx;
+        p2.vy = -p2.vy;
+      }
+  
+    }
+  
+  
+    /* ---------- pJS functions - modes events ------------ */
+  
+    pJS.fn.modes.pushParticles = function(nb, pos){
+  
+      pJS.tmp.pushing = true;
+  
+      for(var i = 0; i < nb; i++){
+        pJS.particles.array.push(
+          new pJS.fn.particle(
+            pJS.particles.color,
+            pJS.particles.opacity.value,
+            {
+              'x': pos ? pos.pos_x : Math.random() * pJS.canvas.w,
+              'y': pos ? pos.pos_y : Math.random() * pJS.canvas.h
+            }
+          )
+        )
+        if(i == nb-1){
+          if(!pJS.particles.move.enable){
+            pJS.fn.particlesDraw();
+          }
+          pJS.tmp.pushing = false;
+        }
+      }
+  
+    };
+  
+  
+    pJS.fn.modes.removeParticles = function(nb){
+  
+      pJS.particles.array.splice(0, nb);
+      if(!pJS.particles.move.enable){
+        pJS.fn.particlesDraw();
+      }
+  
+    };
+  
+  
+    pJS.fn.modes.bubbleParticle = function(p){
+  
+      /* on hover event */
+      if(pJS.interactivity.events.onhover.enable && isInArray('bubble', pJS.interactivity.events.onhover.mode)){
+  
+        var dx_mouse = p.x - pJS.interactivity.mouse.pos_x,
+            dy_mouse = p.y - pJS.interactivity.mouse.pos_y,
+            dist_mouse = Math.sqrt(dx_mouse*dx_mouse + dy_mouse*dy_mouse),
+            ratio = 1 - dist_mouse / pJS.interactivity.modes.bubble.distance;
+  
+        function init(){
+          p.opacity_bubble = p.opacity;
+          p.radius_bubble = p.radius;
+        }
+  
+        /* mousemove - check ratio */
+        if(dist_mouse <= pJS.interactivity.modes.bubble.distance){
+  
+          if(ratio >= 0 && pJS.interactivity.status == 'mousemove'){
+            
+            /* size */
+            if(pJS.interactivity.modes.bubble.size != pJS.particles.size.value){
+  
+              if(pJS.interactivity.modes.bubble.size > pJS.particles.size.value){
+                var size = p.radius + (pJS.interactivity.modes.bubble.size*ratio);
+                if(size >= 0){
+                  p.radius_bubble = size;
+                }
+              }else{
+                var dif = p.radius - pJS.interactivity.modes.bubble.size,
+                    size = p.radius - (dif*ratio);
+                if(size > 0){
+                  p.radius_bubble = size;
+                }else{
+                  p.radius_bubble = 0;
+                }
+              }
+  
+            }
+  
+            /* opacity */
+            if(pJS.interactivity.modes.bubble.opacity != pJS.particles.opacity.value){
+  
+              if(pJS.interactivity.modes.bubble.opacity > pJS.particles.opacity.value){
+                var opacity = pJS.interactivity.modes.bubble.opacity*ratio;
+                if(opacity > p.opacity && opacity <= pJS.interactivity.modes.bubble.opacity){
+                  p.opacity_bubble = opacity;
+                }
+              }else{
+                var opacity = p.opacity - (pJS.particles.opacity.value-pJS.interactivity.modes.bubble.opacity)*ratio;
+                if(opacity < p.opacity && opacity >= pJS.interactivity.modes.bubble.opacity){
+                  p.opacity_bubble = opacity;
+                }
+              }
+  
+            }
+  
+          }
+  
+        }else{
+          init();
+        }
+  
+  
+        /* mouseleave */
+        if(pJS.interactivity.status == 'mouseleave'){
+          init();
+        }
+      
+      }
+  
+      /* on click event */
+      else if(pJS.interactivity.events.onclick.enable && isInArray('bubble', pJS.interactivity.events.onclick.mode)){
+  
+  
+        if(pJS.tmp.bubble_clicking){
+          var dx_mouse = p.x - pJS.interactivity.mouse.click_pos_x,
+              dy_mouse = p.y - pJS.interactivity.mouse.click_pos_y,
+              dist_mouse = Math.sqrt(dx_mouse*dx_mouse + dy_mouse*dy_mouse),
+              time_spent = (new Date().getTime() - pJS.interactivity.mouse.click_time)/1000;
+  
+          if(time_spent > pJS.interactivity.modes.bubble.duration){
+            pJS.tmp.bubble_duration_end = true;
+          }
+  
+          if(time_spent > pJS.interactivity.modes.bubble.duration*2){
+            pJS.tmp.bubble_clicking = false;
+            pJS.tmp.bubble_duration_end = false;
+          }
+        }
+  
+  
+        function process(bubble_param, particles_param, p_obj_bubble, p_obj, id){
+  
+          if(bubble_param != particles_param){
+  
+            if(!pJS.tmp.bubble_duration_end){
+              if(dist_mouse <= pJS.interactivity.modes.bubble.distance){
+                if(p_obj_bubble != undefined) var obj = p_obj_bubble;
+                else var obj = p_obj;
+                if(obj != bubble_param){
+                  var value = p_obj - (time_spent * (p_obj - bubble_param) / pJS.interactivity.modes.bubble.duration);
+                  if(id == 'size') p.radius_bubble = value;
+                  if(id == 'opacity') p.opacity_bubble = value;
+                }
+              }else{
+                if(id == 'size') p.radius_bubble = undefined;
+                if(id == 'opacity') p.opacity_bubble = undefined;
+              }
+            }else{
+              if(p_obj_bubble != undefined){
+                var value_tmp = p_obj - (time_spent * (p_obj - bubble_param) / pJS.interactivity.modes.bubble.duration),
+                    dif = bubble_param - value_tmp;
+                    value = bubble_param + dif;
+                if(id == 'size') p.radius_bubble = value;
+                if(id == 'opacity') p.opacity_bubble = value;
+              }
+            }
+  
+          }
+  
+        }
+
+
