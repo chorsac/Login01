@@ -1190,3 +1190,341 @@ if(pJS.tmp.bubble_clicking){
     };
 
 
+pJS.fn.vendors.createSvgImg = function(p){
+  
+      /* set color to svg element */
+      var svgXml = pJS.tmp.source_svg,
+          rgbHex = /#([0-9A-F]{3,6})/gi,
+          coloredSvgXml = svgXml.replace(rgbHex, function (m, r, g, b) {
+            if(p.color.rgb){
+              var color_value = 'rgba('+p.color.rgb.r+','+p.color.rgb.g+','+p.color.rgb.b+','+p.opacity+')';
+            }else{
+              var color_value = 'hsla('+p.color.hsl.h+','+p.color.hsl.s+'%,'+p.color.hsl.l+'%,'+p.opacity+')';
+            }
+            return color_value;
+          });
+  
+      /* prepare to create img with colored svg */
+      var svg = new Blob([coloredSvgXml], {type: 'image/svg+xml;charset=utf-8'}),
+          DOMURL = window.URL || window.webkitURL || window,
+          url = DOMURL.createObjectURL(svg);
+  
+      /* create particle img obj */
+      var img = new Image();
+      img.addEventListener('load', function(){
+        p.img.obj = img;
+        p.img.loaded = true;
+        DOMURL.revokeObjectURL(url);
+        pJS.tmp.count_svg++;
+      });
+      img.src = url;
+  
+    };
+  
+  
+    pJS.fn.vendors.destroypJS = function(){
+      cancelAnimationFrame(pJS.fn.drawAnimFrame);
+      canvas_el.remove();
+      pJSDom = null;
+    };
+  
+  
+    pJS.fn.vendors.drawShape = function(c, startX, startY, sideLength, sideCountNumerator, sideCountDenominator){
+  
+      // By Programming Thomas - https://programmingthomas.wordpress.com/2013/04/03/n-sided-shapes/
+      var sideCount = sideCountNumerator * sideCountDenominator;
+      var decimalSides = sideCountNumerator / sideCountDenominator;
+      var interiorAngleDegrees = (180 * (decimalSides - 2)) / decimalSides;
+      var interiorAngle = Math.PI - Math.PI * interiorAngleDegrees / 180; // convert to radians
+      c.save();
+      c.beginPath();
+      c.translate(startX, startY);
+      c.moveTo(0,0);
+      for (var i = 0; i < sideCount; i++) {
+        c.lineTo(sideLength,0);
+        c.translate(sideLength,0);
+        c.rotate(interiorAngle);
+      }
+      //c.stroke();
+      c.fill();
+      c.restore();
+  
+    };
+  
+    pJS.fn.vendors.exportImg = function(){
+      window.open(pJS.canvas.el.toDataURL('image/png'), '_blank');
+    };
+  
+  
+    pJS.fn.vendors.loadImg = function(type){
+  
+      pJS.tmp.img_error = undefined;
+  
+      if(pJS.particles.shape.image.src != ''){
+  
+        if(type == 'svg'){
+  
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', pJS.particles.shape.image.src);
+          xhr.onreadystatechange = function (data) {
+            if(xhr.readyState == 4){
+              if(xhr.status == 200){
+                pJS.tmp.source_svg = data.currentTarget.response;
+                pJS.fn.vendors.checkBeforeDraw();
+              }else{
+                console.log('Error pJS - Image not found');
+                pJS.tmp.img_error = true;
+              }
+            }
+          }
+          xhr.send();
+  
+        }else{
+  
+          var img = new Image();
+          img.addEventListener('load', function(){
+            pJS.tmp.img_obj = img;
+            pJS.fn.vendors.checkBeforeDraw();
+          });
+          img.src = pJS.particles.shape.image.src;
+  
+        }
+  
+      }else{
+        console.log('Error pJS - No image.src');
+        pJS.tmp.img_error = true;
+      }
+  
+    };
+  
+  
+    pJS.fn.vendors.draw = function(){
+  
+      if(pJS.particles.shape.type == 'image'){
+  
+        if(pJS.tmp.img_type == 'svg'){
+  
+          if(pJS.tmp.count_svg >= pJS.particles.number.value){
+            pJS.fn.particlesDraw();
+            if(!pJS.particles.move.enable) cancelRequestAnimFrame(pJS.fn.drawAnimFrame);
+            else pJS.fn.drawAnimFrame = requestAnimFrame(pJS.fn.vendors.draw);
+          }else{
+            //console.log('still loading...');
+            if(!pJS.tmp.img_error) pJS.fn.drawAnimFrame = requestAnimFrame(pJS.fn.vendors.draw);
+          }
+  
+        }else{
+  
+          if(pJS.tmp.img_obj != undefined){
+            pJS.fn.particlesDraw();
+            if(!pJS.particles.move.enable) cancelRequestAnimFrame(pJS.fn.drawAnimFrame);
+            else pJS.fn.drawAnimFrame = requestAnimFrame(pJS.fn.vendors.draw);
+          }else{
+            if(!pJS.tmp.img_error) pJS.fn.drawAnimFrame = requestAnimFrame(pJS.fn.vendors.draw);
+          }
+  
+        }
+  
+      }else{
+        pJS.fn.particlesDraw();
+        if(!pJS.particles.move.enable) cancelRequestAnimFrame(pJS.fn.drawAnimFrame);
+        else pJS.fn.drawAnimFrame = requestAnimFrame(pJS.fn.vendors.draw);
+      }
+  
+    };
+  
+  
+    pJS.fn.vendors.checkBeforeDraw = function(){
+  
+      // if shape is image
+      if(pJS.particles.shape.type == 'image'){
+  
+        if(pJS.tmp.img_type == 'svg' && pJS.tmp.source_svg == undefined){
+          pJS.tmp.checkAnimFrame = requestAnimFrame(check);
+        }else{
+          //console.log('images loaded! cancel check');
+          cancelRequestAnimFrame(pJS.tmp.checkAnimFrame);
+          if(!pJS.tmp.img_error){
+            pJS.fn.vendors.init();
+            pJS.fn.vendors.draw();
+          }
+          
+        }
+  
+      }else{
+        pJS.fn.vendors.init();
+        pJS.fn.vendors.draw();
+      }
+  
+    };
+  
+  
+    pJS.fn.vendors.init = function(){
+  
+      /* init canvas + particles */
+      pJS.fn.retinaInit();
+      pJS.fn.canvasInit();
+      pJS.fn.canvasSize();
+      pJS.fn.canvasPaint();
+      pJS.fn.particlesCreate();
+      pJS.fn.vendors.densityAutoParticles();
+  
+      /* particles.line_linked - convert hex colors to rgb */
+      pJS.particles.line_linked.color_rgb_line = hexToRgb(pJS.particles.line_linked.color);
+  
+    };
+  
+  
+    pJS.fn.vendors.start = function(){
+  
+      if(isInArray('image', pJS.particles.shape.type)){
+        pJS.tmp.img_type = pJS.particles.shape.image.src.substr(pJS.particles.shape.image.src.length - 3);
+        pJS.fn.vendors.loadImg(pJS.tmp.img_type);
+      }else{
+        pJS.fn.vendors.checkBeforeDraw();
+      }
+  
+    };
+  
+  
+  
+  
+    /* ---------- pJS - start ------------ */
+  
+  
+    pJS.fn.vendors.eventsListeners();
+  
+    pJS.fn.vendors.start();
+    
+  
+  
+  };
+  
+  /* ---------- global functions - vendors ------------ */
+  
+  Object.deepExtend = function(destination, source) {
+    for (var property in source) {
+      if (source[property] && source[property].constructor &&
+       source[property].constructor === Object) {
+        destination[property] = destination[property] || {};
+        arguments.callee(destination[property], source[property]);
+      } else {
+        destination[property] = source[property];
+      }
+    }
+    return destination;
+  };
+  
+  window.requestAnimFrame = (function(){
+    return  window.requestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame    ||
+      window.oRequestAnimationFrame      ||
+      window.msRequestAnimationFrame     ||
+      function(callback){
+        window.setTimeout(callback, 1000 / 60);
+      };
+  })();
+  
+  window.cancelRequestAnimFrame = ( function() {
+    return window.cancelAnimationFrame         ||
+      window.webkitCancelRequestAnimationFrame ||
+      window.mozCancelRequestAnimationFrame    ||
+      window.oCancelRequestAnimationFrame      ||
+      window.msCancelRequestAnimationFrame     ||
+      clearTimeout
+  } )();
+  
+  function hexToRgb(hex){
+    // By Tim Down - http://stackoverflow.com/a/5624139/3493650
+    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+       return r + r + g + g + b + b;
+    });
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+  };
+  
+  function clamp(number, min, max) {
+    return Math.min(Math.max(number, min), max);
+  };
+  
+  function isInArray(value, array) {
+    return array.indexOf(value) > -1;
+  }
+  
+  
+  /* ---------- particles.js functions - start ------------ */
+  
+  window.pJSDom = [];
+  
+  window.particlesJS = function(tag_id, params){
+  
+    //console.log(params);
+  
+    /* no string id? so it's object params, and set the id with default id */
+    if(typeof(tag_id) != 'string'){
+      params = tag_id;
+      tag_id = 'particles-js';
+    }
+  
+    /* no id? set the id to default id */
+    if(!tag_id){
+      tag_id = 'particles-js';
+    }
+  
+    /* pJS elements */
+    var pJS_tag = document.getElementById(tag_id),
+        pJS_canvas_class = 'particles-js-canvas-el',
+        exist_canvas = pJS_tag.getElementsByClassName(pJS_canvas_class);
+  
+    /* remove canvas if exists into the pJS target tag */
+    if(exist_canvas.length){
+      while(exist_canvas.length > 0){
+        pJS_tag.removeChild(exist_canvas[0]);
+      }
+    }
+  
+    /* create canvas element */
+    var canvas_el = document.createElement('canvas');
+    canvas_el.className = pJS_canvas_class;
+  
+    /* set size canvas */
+    canvas_el.style.width = "100%";
+    canvas_el.style.height = "100%";
+  
+    /* append canvas */
+    var canvas = document.getElementById(tag_id).appendChild(canvas_el);
+  
+    /* launch particle.js */
+    if(canvas != null){
+      pJSDom.push(new pJS(tag_id, params));
+    }
+  
+  };
+  
+  window.particlesJS.load = function(tag_id, path_config_json, callback){
+  
+    /* load json config */
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', path_config_json);
+    xhr.onreadystatechange = function (data) {
+      if(xhr.readyState == 4){
+        if(xhr.status == 200){
+          var params = JSON.parse(data.currentTarget.response);
+          window.particlesJS(tag_id, params);
+          if(callback) callback();
+        }else{
+          console.log('Error pJS - XMLHttpRequest status: '+xhr.status);
+          console.log('Error pJS - File config not found');
+        }
+      }
+    };
+    xhr.send();
+  
+  };
