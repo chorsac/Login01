@@ -898,3 +898,295 @@ pJS.fn.interact.attractParticles  = function(p1, p2){
         }
 
 
+if(pJS.tmp.bubble_clicking){
+          /* size */
+          process(pJS.interactivity.modes.bubble.size, pJS.particles.size.value, p.radius_bubble, p.radius, 'size');
+          /* opacity */
+          process(pJS.interactivity.modes.bubble.opacity, pJS.particles.opacity.value, p.opacity_bubble, p.opacity, 'opacity');
+        }
+  
+      }
+  
+    };
+  
+  
+    pJS.fn.modes.repulseParticle = function(p){
+  
+      if(pJS.interactivity.events.onhover.enable && isInArray('repulse', pJS.interactivity.events.onhover.mode) && pJS.interactivity.status == 'mousemove') {
+  
+        var dx_mouse = p.x - pJS.interactivity.mouse.pos_x,
+            dy_mouse = p.y - pJS.interactivity.mouse.pos_y,
+            dist_mouse = Math.sqrt(dx_mouse*dx_mouse + dy_mouse*dy_mouse);
+  
+        var normVec = {x: dx_mouse/dist_mouse, y: dy_mouse/dist_mouse},
+            repulseRadius = pJS.interactivity.modes.repulse.distance,
+            velocity = 100,
+            repulseFactor = clamp((1/repulseRadius)*(-1*Math.pow(dist_mouse/repulseRadius,2)+1)*repulseRadius*velocity, 0, 50);
+        
+        var pos = {
+          x: p.x + normVec.x * repulseFactor,
+          y: p.y + normVec.y * repulseFactor
+        }
+  
+        if(pJS.particles.move.out_mode == 'bounce'){
+          if(pos.x - p.radius > 0 && pos.x + p.radius < pJS.canvas.w) p.x = pos.x;
+          if(pos.y - p.radius > 0 && pos.y + p.radius < pJS.canvas.h) p.y = pos.y;
+        }else{
+          p.x = pos.x;
+          p.y = pos.y;
+        }
+      
+      }
+  
+  
+      else if(pJS.interactivity.events.onclick.enable && isInArray('repulse', pJS.interactivity.events.onclick.mode)) {
+  
+        if(!pJS.tmp.repulse_finish){
+          pJS.tmp.repulse_count++;
+          if(pJS.tmp.repulse_count == pJS.particles.array.length){
+            pJS.tmp.repulse_finish = true;
+          }
+        }
+  
+        if(pJS.tmp.repulse_clicking){
+  
+          var repulseRadius = Math.pow(pJS.interactivity.modes.repulse.distance/6, 3);
+  
+          var dx = pJS.interactivity.mouse.click_pos_x - p.x,
+              dy = pJS.interactivity.mouse.click_pos_y - p.y,
+              d = dx*dx + dy*dy;
+  
+          var force = -repulseRadius / d * 1;
+  
+          function process(){
+  
+            var f = Math.atan2(dy,dx);
+            p.vx = force * Math.cos(f);
+            p.vy = force * Math.sin(f);
+  
+            if(pJS.particles.move.out_mode == 'bounce'){
+              var pos = {
+                x: p.x + p.vx,
+                y: p.y + p.vy
+              }
+              if (pos.x + p.radius > pJS.canvas.w) p.vx = -p.vx;
+              else if (pos.x - p.radius < 0) p.vx = -p.vx;
+              if (pos.y + p.radius > pJS.canvas.h) p.vy = -p.vy;
+              else if (pos.y - p.radius < 0) p.vy = -p.vy;
+            }
+  
+          }
+  
+          // default
+          if(d <= repulseRadius){
+            process();
+          }
+  
+          // bang - slow motion mode
+          // if(!pJS.tmp.repulse_finish){
+          //   if(d <= repulseRadius){
+          //     process();
+          //   }
+          // }else{
+          //   process();
+          // }
+          
+  
+        }else{
+  
+          if(pJS.tmp.repulse_clicking == false){
+  
+            p.vx = p.vx_i;
+            p.vy = p.vy_i;
+          
+          }
+  
+        }
+  
+      }
+  
+    }
+  
+  
+    pJS.fn.modes.grabParticle = function(p){
+  
+      if(pJS.interactivity.events.onhover.enable && pJS.interactivity.status == 'mousemove'){
+  
+        var dx_mouse = p.x - pJS.interactivity.mouse.pos_x,
+            dy_mouse = p.y - pJS.interactivity.mouse.pos_y,
+            dist_mouse = Math.sqrt(dx_mouse*dx_mouse + dy_mouse*dy_mouse);
+  
+        /* draw a line between the cursor and the particle if the distance between them is under the config distance */
+        if(dist_mouse <= pJS.interactivity.modes.grab.distance){
+  
+          var opacity_line = pJS.interactivity.modes.grab.line_linked.opacity - (dist_mouse / (1/pJS.interactivity.modes.grab.line_linked.opacity)) / pJS.interactivity.modes.grab.distance;
+  
+          if(opacity_line > 0){
+  
+            /* style */
+            var color_line = pJS.particles.line_linked.color_rgb_line;
+            pJS.canvas.ctx.strokeStyle = 'rgba('+color_line.r+','+color_line.g+','+color_line.b+','+opacity_line+')';
+            pJS.canvas.ctx.lineWidth = pJS.particles.line_linked.width;
+            //pJS.canvas.ctx.lineCap = 'round'; /* performance issue */
+            
+            /* path */
+            pJS.canvas.ctx.beginPath();
+            pJS.canvas.ctx.moveTo(p.x, p.y);
+            pJS.canvas.ctx.lineTo(pJS.interactivity.mouse.pos_x, pJS.interactivity.mouse.pos_y);
+            pJS.canvas.ctx.stroke();
+            pJS.canvas.ctx.closePath();
+  
+          }
+  
+        }
+  
+      }
+  
+    };
+  
+  
+  
+    /* ---------- pJS functions - vendors ------------ */
+  
+    pJS.fn.vendors.eventsListeners = function(){
+  
+      /* events target element */
+      if(pJS.interactivity.detect_on == 'window'){
+        pJS.interactivity.el = window;
+      }else{
+        pJS.interactivity.el = pJS.canvas.el;
+      }
+  
+  
+      /* detect mouse pos - on hover / click event */
+      if(pJS.interactivity.events.onhover.enable || pJS.interactivity.events.onclick.enable){
+  
+        /* el on mousemove */
+        pJS.interactivity.el.addEventListener('mousemove', function(e){
+  
+          if(pJS.interactivity.el == window){
+            var pos_x = e.clientX,
+                pos_y = e.clientY;
+          }
+          else{
+            var pos_x = e.offsetX || e.clientX,
+                pos_y = e.offsetY || e.clientY;
+          }
+  
+          pJS.interactivity.mouse.pos_x = pos_x;
+          pJS.interactivity.mouse.pos_y = pos_y;
+  
+          if(pJS.tmp.retina){
+            pJS.interactivity.mouse.pos_x *= pJS.canvas.pxratio;
+            pJS.interactivity.mouse.pos_y *= pJS.canvas.pxratio;
+          }
+  
+          pJS.interactivity.status = 'mousemove';
+  
+        });
+  
+        /* el on onmouseleave */
+        pJS.interactivity.el.addEventListener('mouseleave', function(e){
+  
+          pJS.interactivity.mouse.pos_x = null;
+          pJS.interactivity.mouse.pos_y = null;
+          pJS.interactivity.status = 'mouseleave';
+  
+        });
+  
+      }
+  
+      /* on click event */
+      if(pJS.interactivity.events.onclick.enable){
+  
+        pJS.interactivity.el.addEventListener('click', function(){
+  
+          pJS.interactivity.mouse.click_pos_x = pJS.interactivity.mouse.pos_x;
+          pJS.interactivity.mouse.click_pos_y = pJS.interactivity.mouse.pos_y;
+          pJS.interactivity.mouse.click_time = new Date().getTime();
+  
+          if(pJS.interactivity.events.onclick.enable){
+  
+            switch(pJS.interactivity.events.onclick.mode){
+  
+              case 'push':
+                if(pJS.particles.move.enable){
+                  pJS.fn.modes.pushParticles(pJS.interactivity.modes.push.particles_nb, pJS.interactivity.mouse);
+                }else{
+                  if(pJS.interactivity.modes.push.particles_nb == 1){
+                    pJS.fn.modes.pushParticles(pJS.interactivity.modes.push.particles_nb, pJS.interactivity.mouse);
+                  }
+                  else if(pJS.interactivity.modes.push.particles_nb > 1){
+                    pJS.fn.modes.pushParticles(pJS.interactivity.modes.push.particles_nb);
+                  }
+                }
+              break;
+  
+              case 'remove':
+                pJS.fn.modes.removeParticles(pJS.interactivity.modes.remove.particles_nb);
+              break;
+  
+              case 'bubble':
+                pJS.tmp.bubble_clicking = true;
+              break;
+  
+              case 'repulse':
+                pJS.tmp.repulse_clicking = true;
+                pJS.tmp.repulse_count = 0;
+                pJS.tmp.repulse_finish = false;
+                setTimeout(function(){
+                  pJS.tmp.repulse_clicking = false;
+                }, pJS.interactivity.modes.repulse.duration*1000)
+              break;
+  
+            }
+  
+          }
+  
+        });
+          
+      }
+  
+  
+    };
+  
+    pJS.fn.vendors.densityAutoParticles = function(){
+  
+      if(pJS.particles.number.density.enable){
+  
+        /* calc area */
+        var area = pJS.canvas.el.width * pJS.canvas.el.height / 1000;
+        if(pJS.tmp.retina){
+          area = area/(pJS.canvas.pxratio*2);
+        }
+  
+        /* calc number of particles based on density area */
+        var nb_particles = area * pJS.particles.number.value / pJS.particles.number.density.value_area;
+  
+        /* add or remove X particles */
+        var missing_particles = pJS.particles.array.length - nb_particles;
+        if(missing_particles < 0) pJS.fn.modes.pushParticles(Math.abs(missing_particles));
+        else pJS.fn.modes.removeParticles(missing_particles);
+  
+      }
+  
+    };
+  
+  
+    pJS.fn.vendors.checkOverlap = function(p1, position){
+      for(var i = 0; i < pJS.particles.array.length; i++){
+        var p2 = pJS.particles.array[i];
+  
+        var dx = p1.x - p2.x,
+            dy = p1.y - p2.y,
+            dist = Math.sqrt(dx*dx + dy*dy);
+  
+        if(dist <= p1.radius + p2.radius){
+          p1.x = position ? position.x : Math.random() * pJS.canvas.w;
+          p1.y = position ? position.y : Math.random() * pJS.canvas.h;
+          pJS.fn.vendors.checkOverlap(p1);
+        }
+      }
+    };
+
+
