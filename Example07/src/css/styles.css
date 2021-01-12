@@ -58,7 +58,7 @@ button{
 
 
 body{
-    background: url(../../public/img/fondo.jpg);
+    background: url(../../img/fondo.jpg);
     background-attachment: fixed;
     background-position: center center;
     background-repeat: no-repeat;
