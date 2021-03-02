@@ -15,3 +15,6 @@ https://chorsac.github.io/Login01/Example07/
 
 story book
 https://chorsac.github.io/Login01/storybook/
+
+solo músic
+https://chorsac.github.io/Login01/solo-music/
