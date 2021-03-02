@@ -37,7 +37,7 @@ const stories = [
     {
         id: 2,
         title: "DIVYANSHU KR",
-        thumbnail: "https://avatars.sololearn.com/c3160898-53b6-4057-8d85-d92a6d47071d.jpg",
+        thumbnail: "https://api.sololearn.com/Uploads/Avatars/14931695.jpg",
         like: 785,
         reading: "7k",
         author: "DIVYANSHU KR",
@@ -98,7 +98,7 @@ const stories = [
     {
         id: 4,
         title: "Namit jain",
-        thumbnail: "https://avatars.sololearn.com/56d2c273-3806-4a7b-9958-4cbd48d880df.jpg",
+        thumbnail: "https://api.sololearn.com/Uploads/Avatars/14931695.jpg",
         like: 570,
         reading: "4.5k",
         author: "Namit jain",
