@@ -306,3 +306,284 @@ section {
 .friend p {
   font-size: 14px;
 }
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+.chatbox .nav,
+.chatbox .footer {
+  height: 50px;
+  color: #666;
+}
+.nav .img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+}
+.nav .img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+}
+.form-group {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  padding: 7px 0px;
+}
+.form-group ~ .block-text {
+  display: none;
+  color: var(--primary);
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  line-height: 50px;
+}
+.form-group.block {
+  display: none;
+}
+.form-group.block ~ .block-text {
+  display: block;
+}
+.form-group input {
+  flex: 1;
+  outline: none;
+  height: 36px;
+  padding: 3px 10px;
+}
+.msg-send-btn {
+  height: 36px;
+  width: 40px;
+  color: #fff;
+  font-size: 25px;
+  background: var(--primary);
+  padding: 5px;
+}
+.msg-send-btn:hover .material-icons {
+  color: #fff !important;
+}
+.close-chat {
+  padding: 5px 0;
+}
+.chatbox {
+  margin: 60px 0px;
+  cursor: none;
+  display: none;
+}
+.chat-list {
+  cursor: none;
+}
+.chat-list li {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 12px;
+}
+.chat-list li span {
+  position: relative;
+  width: auto;
+  max-width: 170px;
+  padding: 8px 12px;
+  border-radius: 20px;
+}
+.chat-list li small {
+  font-size: 12px;
+  display: inline-block;
+  padding: 0 3px;
+  opacity: 0.7;
+}
+.send {
+  text-align: right;
+}
+.received {
+  text-align: left;
+}
+.send > span {
+  background: var(--primary);
+  color: #fff;
+}
+.received > span {
+  background: #fff;
+}
+.marches {
+  width: 100%;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+}
+.marches h1 {
+  font-size: 3rem;
+  color: var(--primary);
+  opacity: 0.8;
+  transform: translateY(-20px);
+}
+.match-img .img {
+  height: 120px;
+  width: 120px;
+  border-radius: 50%;
+  background: #ccc;
+  margin: 5px;
+}
+.marches p {
+  margin: 25px 0;
+  color: #444;
+}
+.match-btn {
+  background: var(--primary);
+  color: #fff;
+  padding: 14px 30px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  font-size: 16px;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+}
+.alert {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 10px;
+  background: #fff;
+  z-index: 8;
+  padding: 12px;
+  width: 340px;
+  box-shadow: 2px 1px 5px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  display: none;
+}
+.alert .flex {
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #444;
+}
+.alert .flex > div {
+  display: flex;
+  align-items: center;
+}
+.sec {
+  text-align: center;
+  padding: 25px 20px;
+  color: #444;
+  background: #fff;
+  min-height: 100vh;
+}
+.title {
+  font-size: 2.2rem;
+  color: #000;
+  margin: 10px 0 25px;
+}
+
+.creater {
+  display: inline-block;
+  color: #fff;
+  padding: 8px 12px;
+  background: #fc63a1;
+  border-radius: 20px;
+  margin: 25px 0;
+}
+.sec p {
+  margin: 14px 0;
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+.btn {
+  background: var(--primary);
+  color: #fff;
+  padding: 12px 30px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  font-size: 16px;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+  margin-top: 10px;
+}
+.sec3 {
+  text-align: left;
+  padding: 30px;
+}
+.sec3 h1 {
+  margin: 10px 0;
+  font-size: 2rem;
+}
+.form-group1 {
+  margin-bottom: 15px;
+  display: block;
+}
+
+label {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #444;
+}
+#form input,
+#form select,
+textarea {
+  width: 100%;
+  outline: none;
+  padding: 5px 20px;
+  height: 40px;
+  border: none;
+  background: #ededed;
+  border-radius: 25px;
+  font-size: 16px;
+}
+.row {
+  display: flex;
+  width: 100%;
+  margin-bottom: 15px;
+}
+.col-6 {
+  width: 50%;
+  flex: 1;
+  padding: 5px;
+}
+textarea {
+  height: 100px;
+  resize: none;
+  padding: 15px;
+  font-family: sans-serif;
+}
+.verify-box {
+  margin: 70px 0;
+}
+.verify-box input {
+  display: block;
+  width: 120px;
+  outline: none;
+  height: 40px;
+  text-align: center;
+  margin: 10px auto;
+  font-size: 20px;
+}
+.sec4 .title {
+  font-size: 2rem;
+  color: var(--primary);
+}
+.loader {
+  position: absolute;
+  top: 20%;
+  left: calc(50% - 70px);
+  height: 150px;
+  width: 150px;
+  border: 10px solid var(--primary);
+  border-right-color: transparent;
+  z-index: 7;
+  border-radius: 50%;
+  animation: spin 1s ease 2;
+  animation-fill-mode: both;
+  display: none;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.sec2,
+.sec2,
+.sec3,
+.sec4 {
+  display: none;
+}
