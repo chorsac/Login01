@@ -1,4 +1,181 @@
-<main class="main">
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="developer" content="Amardeep kesharwani" />
+    <title>instagram lite AMP</title>
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+    <link rel="canonical" href="" />
+    <!-- Setup -->
+    <script async custom-element="amp-instagram" src="https://cdn.ampproject.org/v0/amp-instagram-0.1.js"></script>
+    <script async custom-element="amp-list" src="https://cdn.ampproject.org/v0/amp-list-0.1.js"></script>
+    <script async custom-template="amp-mustache" src="https://cdn.ampproject.org/v0/amp-mustache-0.2.js"></script>
+    <script async custom-element="amp-bind" src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"></script>
+    <style amp-boilerplate>
+        body {
+            -webkit-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
+            -moz-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
+            -ms-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
+            animation: -amp-start 8s steps(1, end) 0s 1 normal both;
+        }
+
+        @-webkit-keyframes -amp-start {
+            from {
+                visibility: hidden;
+            }
+
+            to {
+                visibility: visible;
+            }
+        }
+
+        @-moz-keyframes -amp-start {
+            from {
+                visibility: hidden;
+            }
+
+            to {
+                visibility: visible;
+            }
+        }
+
+        @-ms-keyframes -amp-start {
+            from {
+                visibility: hidden;
+            }
+
+            to {
+                visibility: visible;
+            }
+        }
+
+        @-o-keyframes -amp-start {
+            from {
+                visibility: hidden;
+            }
+
+            to {
+                visibility: visible;
+            }
+        }
+
+        @keyframes -amp-start {
+            from {
+                visibility: hidden;
+            }
+
+            to {
+                visibility: visible;
+            }
+        }
+    </style>
+    <noscript>
+        <style amp-boilerplate>
+            body {
+                -webkit-animation: none;
+                -moz-animation: none;
+                -ms-animation: none;
+                animation: none;
+            }
+        </style>
+    </noscript>
+    <style amp-custom>
+        /*
+         app name : Instagram,
+         create by : amardeep kesharwani,
+         date : 2-july-2020
+         this is not hard work it is smart work 😎😎
+         ignore this error, because sololearn not support local storage && other browser features
+        */
+        body {
+            font-family: sans-serif;
+            font-size: 1rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 420px;
+            box-sizing: border-box;
+            margin: auto;
+        }
+
+        .nav,
+        .footer {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            width: 100%;
+            max-width: 420px;
+            height: 45px;
+            transform: translateX(-50%);
+            background: #fff;
+            border-bottom: 1px solid #dedede;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            box-sizing: border-box;
+            z-index: 9;
+        }
+
+        .footer {
+            top: auto;
+            bottom: 0;
+            border-bottom: none;
+            border-top: 1px solid #dedede;
+            padding: 0 20px;
+        }
+
+        .title img {
+            width: 120px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        span svg {
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+        }
+
+        .main {
+            margin: auto;
+            margin-top: 50px;
+            max-width: 420px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <nav class="nav">
+            <span class="camera">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-camera" fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M15 12V6a1 1 0 0 0-1-1h-1.172a3 3 0 0 1-2.12-.879l-.83-.828A1 1 0 0 0 9.173 3H6.828a1 1 0 0 0-.707.293l-.828.828A3 3 0 0 1 3.172 5H2a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2z" />
+                    <path fill-rule="evenodd"
+                        d="M8 11a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" />
+                    <path d="M3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z" />
+                </svg>
+            </span>
+            <h1 class="title">
+                <img src="https://pngimg.com/uploads/instagram/instagram_PNG5.png" alt="Instagram" />
+            </h1>
+            <span class="msg">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z" />
+                </svg>
+            </span>
+        </nav>
+        <main class="main">
             <amp-state id="links">
                 <script type="application/json">
             {
