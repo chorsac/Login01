@@ -78,10 +78,10 @@ class Products extends Component{
    this.fetchProduct('annabelle')
   }
   purchase = (name, price) => {
-    swal("Enter Your Mobile No ", {
+    swal("Ingresar Mobile No ", {
      content: "input",
      attributes: {
-     placeholder: "+91",
+     placeholder: "+51",
      type: "number",
      },
      button:"Register"
@@ -97,7 +97,7 @@ class Products extends Component{
      .then(() => {
       swal({
       title: "Thank You",
-      text: "Your Order Successfully,\nWe will call you soon for delivery details.",
+      text: "Your Order Successfully,\nWe will call you soon for delivery details. +51 934133767 <a href='go:HOME2'>ir</a>",
       icon: "success",
       button:"close"
       })
