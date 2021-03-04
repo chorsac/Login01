@@ -97,7 +97,7 @@ class Products extends Component{
      .then(() => {
       swal({
       title: "Thank You",
-      text: "Your Order Successfully,\nWe will call you soon for delivery details. +51 934133767 <a href='go:HOME2'>ir</a>",
+      text: "Your Order Successfully,\nWe will call you soon for delivery details. +51 999888777",
       icon: "success",
       button:"close"
       })
