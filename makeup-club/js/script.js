@@ -4,7 +4,7 @@ const categories = ["annabelle","almay","alva","anna sui","benefit","boosh","cli
 const NavbarCom = () => {
  return (
   <nav className="nav" >
-  <a href="#" className="logo" >Makeup<span>Club</span></a>
+  <a href="#" className="logo" >Makeup<span>Clubs</span></a>
   <div>
   <span>
   <svg width="1.6em" height="1.6em" viewBox="0 0 16 16" className="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -25,10 +25,10 @@ const HeaderCom = () => {
   return (
   <header className="header">
   <div>
-  <h1>MakeupClub</h1>
+  <h1>MakeupClubs</h1>
   <h2>Best Makeup product</h2>
-  <p>Buy makeup & beauty products online in the world, Best exclusive makeup website in India</p>
-  <a href="https://www.sololearn.com/Profile/9151475/?ref=app" target="_blank" className="btn" >Follow me</a>
+  <p>Buy makeup & beauty products online in the world, Best exclusive</p>
+  <a href="" target="_blank" className="btn" >Follow me</a>
   </div>
   </header>
   );
